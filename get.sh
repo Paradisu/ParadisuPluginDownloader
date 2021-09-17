@@ -81,6 +81,9 @@ gitDownload ParadisuPlugin "https://api.github.com/repos/Paradisu/ParadisuPlugin
 # PlaceholderAPI
 gitDownload PlaceholderAPI "https://api.github.com/repos/PlaceholderAPI/PlaceholderAPI/releases/latest" PlaceholderAPI-*.jar
 
+# PlayerVaultsX
+buildJar PlayerVaultsX "https://github.com/drtshock/PlayerVaults.git" "mvn clean package -T100" target/PlayerVaultsX.jar
+
 # ProtocolLib
 gitDownload ProtocolLib "https://api.github.com/repos/dmulloy2/ProtocolLib/releases/latest" ProtocolLib.jar
 
@@ -109,9 +112,7 @@ ciDownload TrainCarts "https://ci.mg-dev.eu/job/TrainCarts/lastSuccessfulBuild/a
 gitDownload Vault "https://api.github.com/repos/MilkBowl/Vault/releases/latest" Vault.jar
 
 # VentureChat
-export JAVA_HOME=`/usr/libexec/java_home -v 11`
 buildJar VentureChat "https://bitbucket.org/Aust1n46/venturechat.git" "mvn clean package -T100" target/VentureChat-*.jar
-export JAVA_HOME=`/usr/libexec/java_home -v 16`
 
 # WorldEdit
 WORLDEDIT_VERSION=$(curl -s "https://maven.enginehub.org/repo/com/sk89q/worldedit/worldedit-bukkit/maven-metadata.xml" | xq -r .metadata.versioning.latest)
