@@ -2,8 +2,7 @@
 
 # Functions
 manualDownload () {
-  echo "${1} must be downloaded manually at ${2}"
-  open ${2}
+  echo "${1}: ${2}" >> manual.txt
 }
 
 buildJar () {
@@ -30,9 +29,11 @@ gitDownload () {
 # Setup
 rm -rf build && rm -rf jar && rm -rf ci && rm -rf git
 mkdir build && mkdir jar && mkdir ci && mkdir git
+touch manual.txt
 
 # Animatronics
-manualDownload Animatronics "https://www.spigotmc.org/resources/animatronics-animate-armorstands-1-8-1-17-1.36518/history"
+#we must use alternatives as this plugin is the bane of my mortal existence
+#manualDownload Animatronics "https://www.spigotmc.org/resources/animatronics-animate-armorstands-1-8-1-17-1.36518/history"
 
 # ArmorStandTools
 buildJar ArmorStandTools "https://github.com/St3venAU/ArmorStandTools.git" "mvn clean package -T100" target/ArmorStandTools-*.jar
@@ -56,7 +57,8 @@ manualDownload EasyBackup "https://www.spigotmc.org/resources/%E2%AD%90-easyback
 manualDownload ForceResourcepacks "https://www.spigotmc.org/resources/force-resourcepacks.10499/history"
 
 # GSit
-manualDownload GSit "https://www.spigotmc.org/resources/gsit-modern-sit-seat-and-chair-lay-and-crawl-plugin-1-13-x-1-17-x.62325/history"
+# Currently broken, but we should do this ourselves anyways
+#manualDownload GSit "https://www.spigotmc.org/resources/gsit-modern-sit-seat-and-chair-lay-and-crawl-plugin-1-13-x-1-17-x.62325/history"
 
 # HeadDatabase
 manualDownload HeadDatabase "https://www.spigotmc.org/resources/head-database.14280/history"
@@ -69,9 +71,8 @@ ciDownload LuckPerms "https://ci.lucko.me/job/LuckPerms/lastSuccessfulBuild/arti
 
 # OpenAudioMC
 cd build
-export JAVA_HOME=`/usr/libexec/java_home -v 11`
-git clone "https://github.com/Mindgamesnl/OpenAudioMc.git" && cd OpenAudioMc/plugin && mvn clean package -T100
-export JAVA_HOME=`/usr/libexec/java_home -v 16`
+# OpenAudio is special and thus we must build and install its special dependency to our local maven repo first
+git clone "https://github.com/Mindgamesnl/OpenAudioMc.git" && cd OpenAudioMc/jutils && mvn clean install -T100 && cd ../plugin && mvn clean package -T100
 cd ../../..
 cp build/OpenAudioMc/plugin/target/OpenAudioMc-*.jar jar/
 
@@ -88,19 +89,15 @@ buildJar PlayerVaultsX "https://github.com/drtshock/PlayerVaults.git" "mvn clean
 gitDownload ProtocolLib "https://api.github.com/repos/dmulloy2/ProtocolLib/releases/latest" ProtocolLib.jar
 
 # ServerListsPlus
-ciDownload ServerListsPlus "https://ci.codemc.io/job/Minecrell/job/ServerListPlus/lastSuccessfulBuild/artifact/build/libs/*zip*/libs.zip" libs/ServerListPlus-*-SNAPSHOT-Universal.jar libs.zip
+#deprecated
+#ciDownload ServerListsPlus "https://ci.codemc.io/job/Minecrell/job/ServerListPlus/lastSuccessfulBuild/artifact/build/libs/*zip*/libs.zip" libs/ServerListPlus-*-SNAPSHOT-Universal.jar libs.zip
 
 # ShopKeepers
 SHOPKEEPERS_VERSION=$(curl -s "https://nexus.lichtspiele.org/repository/releases/com/nisovin/shopkeepers/Shopkeepers/maven-metadata.xml" | xq -r .metadata.versioning.release)
 ciDownload ShopKeepers "https://nexus.lichtspiele.org/repository/releases/com/nisovin/shopkeepers/Shopkeepers/${SHOPKEEPERS_VERSION}/Shopkeepers-${SHOPKEEPERS_VERSION}.jar" Shopkeepers-*.jar
 
 # TAB
-cd build
-git clone "https://github.com/NEZNAMY/TAB.git" && cd TAB
-sed -i '' 's/return false;/return true;/g' shared/src/main/java/me/neznamy/tab/shared/TAB.java
-mvn clean package -T100
-cd ../..
-cp build/TAB/jar/target/TAB-*.jar jar/
+gitDownload TAB "https://github.com/NEZNAMY/TAB/releases/latest" TAB.v*.jar
 
 # TCCoasters
 ciDownload TCCoasters "https://ci.mg-dev.eu/job/TC%20Coasters/lastSuccessfulBuild/artifact/*zip*/archive.zip" archive/target/TCCoasters-*.jar archive.zip
@@ -123,4 +120,8 @@ WORLDGUARD_VERSION=$(curl -s "https://maven.enginehub.org/artifactory/repo/com/s
 ciDownload WorldGuard "https://ci.enginehub.org/repository/download/bt11/lastSuccessful/worldguard-bukkit-${WORLDGUARD_VERSION}-dist.jar" worldguard-bukkit-*-dist.jar
 
 # Yamipa
-gitDownload Yamipa "https://api.github.com/repos/josemmo/yamipa/releases/latest" YamipaPlugin-*.jar
+#removed for now
+#gitDownload Yamipa "https://api.github.com/repos/josemmo/yamipa/releases/latest" YamipaPlugin-*.jar
+
+# Finish Up
+echo && cat manual.txt && echo
