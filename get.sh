@@ -2,37 +2,42 @@
 
 # Functions
 manualDownload () {
-  echo "${1}: ${2}" >> manual.txt
+  echo "${1} ${2}" >> manual.txt
 }
 
 buildJar () {
   cd build
-  git clone "${2}" && cd "${1}" && "${3}"
+  git clone "${2}"
+  cd ${1}
+  eval ${3}
   cd ../..
-  cp "build/${1}/${4}" jar/
+  eval cp build/${1}/${4} jar/
 }
 
 ciDownload () {
   cd ci
-  mkdir "${1}" && cd "${1}" && wget "${2}"
-  if [ -n "${4}" ] 
+  mkdir "${1}"
+  cd ${1}
+  wget "${2}"
+  if [ -n "${4}" ]
   then
     unzip ${4}
   fi
   cd ../..
-  cp "ci/${1}/${3}" jar/
+  eval cp ci/${1}/${3} jar/
 }
 
 gitDownload () {
   cd git
   mkdir "${1}" && cd "${1}" && wget "$(curl -s ${2} | jq -r .assets[].browser_download_url)"
   cd ../..
-  cp "git/${1}/${3}" jar/
+  eval cp git/${1}/${3} jar/
 }
 
 # Setup
 rm -rf build && rm -rf jar && rm -rf ci && rm -rf git
 mkdir build && mkdir jar && mkdir ci && mkdir git
+touch manual.txt
 
 # Animatronics
 #we must use alternatives as this plugin is the bane of my mortal existence
@@ -75,7 +80,9 @@ ciDownload LuckPerms "https://ci.lucko.me/job/LuckPerms/lastSuccessfulBuild/arti
 # OpenAudioMC
 cd build
 # OpenAudio is special and thus we must build and install its special dependency to our local maven repo first
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 git clone "https://github.com/Mindgamesnl/OpenAudioMc.git" && cd OpenAudioMc/jutils && mvn clean install -T100 && cd ../plugin && mvn clean package -T100
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 cd ../../..
 cp build/OpenAudioMc/plugin/target/OpenAudioMc-*.jar jar/
 
@@ -86,10 +93,10 @@ gitDownload ParadisuPlugin "https://api.github.com/repos/Paradisu/ParadisuPlugin
 gitDownload PlaceholderAPI "https://api.github.com/repos/PlaceholderAPI/PlaceholderAPI/releases/latest" PlaceholderAPI-*.jar
 
 # PlayerVaultsX
-buildJar PlayerVaultsX "https://github.com/drtshock/PlayerVaults.git" "mvn clean package -T100" target/PlayerVaultsX.jar
+buildJar PlayerVaults "https://github.com/drtshock/PlayerVaults.git" "sed -i 's/http:\/\//https:\/\//g' pom.xml && mvn clean package -T100" target/PlayerVaultsX.jar
 
 # ProtocolLib
-gitDownload ProtocolLib "https://api.github.com/repos/dmulloy2/ProtocolLib/releases/latest" ProtocolLib.jar
+buildJar ProtocolLib "https://github.com/dmulloy2/ProtocolLib.git" "mvn clean package -DskipTests -T100" target/ProtocolLib.jar
 
 # ServerListsPlus
 #deprecated
@@ -112,7 +119,9 @@ ciDownload TrainCarts "https://ci.mg-dev.eu/job/TrainCarts/lastSuccessfulBuild/a
 gitDownload Vault "https://api.github.com/repos/MilkBowl/Vault/releases/latest" Vault.jar
 
 # VentureChat
-buildJar VentureChat "https://bitbucket.org/Aust1n46/venturechat.git" "mvn clean package -T100" target/VentureChat-*.jar
+export JAVA_HOME=/usr/lib/jvm/java-16-openjdk-amd64
+buildJar venturechat "https://bitbucket.org/Aust1n46/venturechat.git" "mvn clean package -T100" target/VentureChat-*.jar
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 
 # WorldEdit
 buildJar WorldEdit "https://github.com/EngineHub/WorldEdit.git" "/bin/bash ./gradlew :worldedit-bukkit:build" worldedit-bukkit/build/libs/worldedit-bukkit-*-dist.jar
@@ -126,5 +135,4 @@ buildJar WorldGuard "https://github.com/EngineHub/WorldGuard.git" "/bin/bash ./g
 
 # Finish Up
 echo
-ls
 cat "manual.txt"
