@@ -7,23 +7,27 @@ manualDownload () {
 
 buildJar () {
   cd build
-  git clone ${2} && cd ${1} && ${3}
+  git clone "${2}" && cd "${1}" && "${3}"
   cd ../..
-  cp build/${1}/${4} jar/
+  cp "build/${1}/${4}" jar/
 }
 
 ciDownload () {
   cd ci
-  mkdir ${1} && cd ${1} && wget ${2} && [[ ! -z ${4+x} ]] && unzip ${4}
+  mkdir "${1}" && cd "${1}" && wget "${2}"
+  if [ -n "${4}" ] 
+  then
+    unzip ${4}
+  fi
   cd ../..
-  cp ci/${1}/${3} jar/
+  cp "ci/${1}/${3}" jar/
 }
 
 gitDownload () {
   cd git
-  mkdir ${1} && cd ${1} && wget $(curl -s ${2} | jq -r .assets[].browser_download_url)
+  mkdir "${1}" && cd "${1}" && wget "$(curl -s ${2} | jq -r .assets[].browser_download_url)"
   cd ../..
-  cp git/${1}/${3} jar/
+  cp "git/${1}/${3}" jar/
 }
 
 # Setup
@@ -121,4 +125,6 @@ buildJar WorldGuard "https://github.com/EngineHub/WorldGuard.git" "/bin/bash ./g
 #gitDownload Yamipa "https://api.github.com/repos/josemmo/yamipa/releases/latest" YamipaPlugin-*.jar
 
 # Finish Up
-echo && cat manual.txt && echo
+echo
+ls
+cat "manual.txt"
