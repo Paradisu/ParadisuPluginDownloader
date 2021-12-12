@@ -29,7 +29,6 @@ gitDownload () {
 # Setup
 rm -rf build && rm -rf jar && rm -rf ci && rm -rf git
 mkdir build && mkdir jar && mkdir ci && mkdir git
-touch manual.txt
 
 # Animatronics
 #we must use alternatives as this plugin is the bane of my mortal existence
@@ -112,12 +111,10 @@ gitDownload Vault "https://api.github.com/repos/MilkBowl/Vault/releases/latest" 
 buildJar VentureChat "https://bitbucket.org/Aust1n46/venturechat.git" "mvn clean package -T100" target/VentureChat-*.jar
 
 # WorldEdit
-WORLDEDIT_VERSION=$(curl -s "https://maven.enginehub.org/repo/com/sk89q/worldedit/worldedit-bukkit/maven-metadata.xml" | xq -r .metadata.versioning.latest)
-ciDownload WorldEdit "https://ci.enginehub.org/repository/download/bt10/lastSuccessful/worldedit-bukkit-${WORLDEDIT_VERSION}-dist.jar" worldedit-bukkit-*-dist.jar
+buildJar WorldEdit "https://github.com/EngineHub/WorldEdit.git" "./gradlew :worldedit-bukkit:build" worldedit-bukkit/build/libs/worldedit-bukkit-*-dist.jar
 
 # WorldGuard
-WORLDGUARD_VERSION=$(curl -s "https://maven.enginehub.org/artifactory/repo/com/sk89q/worldguard/worldguard-bukkit/maven-metadata.xml" | xq -r .metadata.versioning.latest)
-ciDownload WorldGuard "https://ci.enginehub.org/repository/download/bt11/lastSuccessful/worldguard-bukkit-${WORLDGUARD_VERSION}-dist.jar" worldguard-bukkit-*-dist.jar
+buildJar WorldGuard "https://github.com/EngineHub/WorldGuard.git" "./gradlew build" worldguard-bukkit/build/libs/worldguard-bukkit-*-dist.jar
 
 # Yamipa
 #removed for now
