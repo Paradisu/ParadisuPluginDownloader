@@ -14,7 +14,7 @@ buildJar () {
 
 ciDownload () {
   cd ci
-  mkdir ${1} && cd ${1} && wget ${2} && [[ ! -z ${4} ]] && unzip ${4}
+  mkdir ${1} && cd ${1} && wget ${2} && [[ ! -z ${4+x} ]] && unzip ${4}
   cd ../..
   cp ci/${1}/${3} jar/
 }
@@ -96,7 +96,7 @@ SHOPKEEPERS_VERSION=$(curl -s "https://nexus.lichtspiele.org/repository/releases
 ciDownload ShopKeepers "https://nexus.lichtspiele.org/repository/releases/com/nisovin/shopkeepers/Shopkeepers/${SHOPKEEPERS_VERSION}/Shopkeepers-${SHOPKEEPERS_VERSION}.jar" Shopkeepers-*.jar
 
 # TAB
-gitDownload TAB "https://github.com/NEZNAMY/TAB/releases/latest" TAB.v*.jar
+gitDownload TAB "https://api.github.com/repos/NEZNAMY/TAB/releases/latest" TAB.v*.jar
 
 # TCCoasters
 ciDownload TCCoasters "https://ci.mg-dev.eu/job/TC%20Coasters/lastSuccessfulBuild/artifact/*zip*/archive.zip" archive/target/TCCoasters-*.jar archive.zip
@@ -111,10 +111,10 @@ gitDownload Vault "https://api.github.com/repos/MilkBowl/Vault/releases/latest" 
 buildJar VentureChat "https://bitbucket.org/Aust1n46/venturechat.git" "mvn clean package -T100" target/VentureChat-*.jar
 
 # WorldEdit
-buildJar WorldEdit "https://github.com/EngineHub/WorldEdit.git" "./gradlew :worldedit-bukkit:build" worldedit-bukkit/build/libs/worldedit-bukkit-*-dist.jar
+buildJar WorldEdit "https://github.com/EngineHub/WorldEdit.git" "/bin/bash ./gradlew :worldedit-bukkit:build" worldedit-bukkit/build/libs/worldedit-bukkit-*-dist.jar
 
 # WorldGuard
-buildJar WorldGuard "https://github.com/EngineHub/WorldGuard.git" "./gradlew build" worldguard-bukkit/build/libs/worldguard-bukkit-*-dist.jar
+buildJar WorldGuard "https://github.com/EngineHub/WorldGuard.git" "/bin/bash ./gradlew build" worldguard-bukkit/build/libs/worldguard-bukkit-*-dist.jar
 
 # Yamipa
 #removed for now
