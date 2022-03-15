@@ -35,7 +35,7 @@ gitDownload () {
 }
 
 # Setup
-rm -rf build && rm -rf jar && rm -rf ci && rm -rf git
+rm -rf build && rm -rf jar && rm -rf ci && rm -rf git && rm manual.txt
 mkdir build && mkdir jar && mkdir ci && mkdir git
 touch manual.txt
 
@@ -80,9 +80,7 @@ ciDownload LuckPerms "https://ci.lucko.me/job/LuckPerms/lastSuccessfulBuild/arti
 # OpenAudioMC
 cd build
 # OpenAudio is special and thus we must build and install its special dependency to our local maven repo first
-export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 git clone "https://github.com/Mindgamesnl/OpenAudioMc.git" && cd OpenAudioMc/jutils && mvn clean install -T100 && cd ../plugin && mvn clean package -T100
-export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 cd ../../..
 cp build/OpenAudioMc/plugin/target/OpenAudioMc-*.jar jar/
 
@@ -90,13 +88,13 @@ cp build/OpenAudioMc/plugin/target/OpenAudioMc-*.jar jar/
 gitDownload ParadisuPlugin "https://api.github.com/repos/Paradisu/ParadisuPlugin/releases/latest" ParadisuPlugin-*.jar
 
 # PlaceholderAPI
-gitDownload PlaceholderAPI "https://api.github.com/repos/PlaceholderAPI/PlaceholderAPI/releases/latest" PlaceholderAPI-*.jar
+buildJar PlaceholderAPI "https://github.com/PlaceholderAPI/PlaceholderAPI.git" "/bin/bash ./gradlew build" build/libs/PlaceholderAPI-*-null.jar
 
 # PlayerVaultsX
-buildJar PlayerVaults "https://github.com/drtshock/PlayerVaults.git" "sed -i 's/http:\/\//https:\/\//g' pom.xml && mvn clean package -T100" target/PlayerVaultsX.jar
+buildJar PlayerVaults "https://github.com/drtshock/PlayerVaults.git" "mvn clean package -T100" target/PlayerVaultsX.jar
 
 # ProtocolLib
-buildJar ProtocolLib "https://github.com/dmulloy2/ProtocolLib.git" "mvn clean package -DskipTests -T100" target/ProtocolLib.jar
+gitDownload ProtocolLib "https://api.github.com/repos/dmulloy2/ProtocolLib/releases/latest" ProtocolLib.jar
 
 # ServerListsPlus
 #deprecated
